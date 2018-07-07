@@ -1,17 +1,15 @@
 FROM alpine:3.7
 
-ARG GLPI_VERSION
 ARG IMAGE_VERSION
 ARG BUILD_DATE
 ARG VCS_REF
 
-ENV GLPI_VERSION="${GLPI_VERSION}" \
+ENV GLPI_SOURCE_URL="https://github.com/glpi-project/glpi/releases/download/9.2.4/glpi-9.2.4.tgz" \
     GLPI_PATHS_ROOT="/var/www" \
     GLPI_PATHS_PLUGINS="/var/www/plugins" \
     GLPI_REMOVE_INSTALLER=no \
     GLPI_CHMOD_FILES=no \
-    GLPI_INSTALL_PLUGINS=""
-#   GLPI_INSTALL_PLUGINS="fusioninventory|https://github.com/fusioninventory/fusioninventory-for-glpi/releases/download/glpi9.2%2B1.0/glpi-fusioninventory-9.2.1.0.tar.bz2"
+    GLPI_INSTALL_PLUGINS="fusioninventory|https://github.com/fusioninventory/fusioninventory-for-glpi/releases/download/glpi9.3%2B1.0/fusioninventory-9.3.1.0.tar.bz2"
 
 LABEL maintainer="Pierre GINDRAUD <pgindraud@gmail.com>" \
       org.label-schema.build-date="${BUILD_DATE}" \
@@ -23,7 +21,6 @@ LABEL maintainer="Pierre GINDRAUD <pgindraud@gmail.com>" \
       org.label-schema.vendor="Pierre GINDRAUD" \
       org.label-schema.version="${IMAGE_VERSION}" \
       org.label-schema.schema-version="1.0" \
-      application.glpi.version="${GLPI_VERSION}" \
       image.version="${IMAGE_VERSION}"
 
 # Install dependencies
@@ -51,14 +48,17 @@ RUN apk --no-cache add \
     apk --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.5/main/ add \
       php5-apcu && \
 # Install GLPI sources
-    mkdir -p /run/nginx && \
-    mkdir -p "${GLPI_PATHS_ROOT}" && \
-    adduser -h "${GLPI_PATHS_ROOT}" -g 'Web Application User' -S -D -H -G www-data www-data && \
-    cd "${GLPI_PATHS_ROOT}" && \
-    curl -O -L "https://github.com/glpi-project/glpi/releases/download/${GLPI_VERSION}/glpi-${GLPI_VERSION}.tgz" && \
-    tar -xzf "glpi-${GLPI_VERSION}.tgz" --strip 1 && \
-    rm "glpi-${GLPI_VERSION}.tgz" && \
-    rm -rf AUTHORS.txt CHANGELOG.txt LISEZMOI.txt README.md
+  echo '-----------> Install GLPI' && \
+  echo "Using ${GLPI_SOURCE_URL}" && \
+  mkdir -p /run/nginx && \
+  mkdir -p "${GLPI_PATHS_ROOT}" && \
+  adduser -h "${GLPI_PATHS_ROOT}" -g 'Web Application User' -S -D -H -G www-data www-data && \
+  cd "${GLPI_PATHS_ROOT}" && \  
+  curl -o glpi.tar.gz -L ${GLPI_SOURCE_URL} && \
+  tar -xzf glpi.tar.gz --strip 1 && \
+  rm "glpi.tar.gz"  && \
+  rm -rf AUTHORS.txt CHANGELOG.txt LISEZMOI.txt README.md
+
 
 # Add some configurations files
 COPY root/ /
