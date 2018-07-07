@@ -48,13 +48,13 @@ For better example see at the end of this file.
 
 ```
 git clone
-docker build -t turgon37/glpi .
+docker build -t aminiy/glpi .
 ```
 
 * or Automatic
 
 ```
-docker pull turgon37/glpi
+docker pull aminiy/glpi
 ```
 
 
@@ -65,13 +65,13 @@ The first time you run this image, set the GLPI_REMOVE_INSTALLER variable to 'no
 ### Without database link (you can use an ip address or a domain name in the installer gui)
 
 ```
-docker run --name glpi --publish 8000:80 --volume data-glpi:/var/www/files --volume data-glpi-config:/var/www/config turgon37/glpi
+docker run --name glpi --publish 8000:80 --volume data-glpi:/var/www/files --volume data-glpi-config:/var/www/config aminiy/glpi
 ```
 
 ### With database link (if you have any MySQL/MariaDB as a docker container)
 
 ```
-docker run --name glpi --publish 8000:80 --volume data-glpi:/var/www/files --volume data-glpi-config:/var/www/config --link yourdatabase:mysql turgon37/glpi
+docker run --name glpi --publish 8000:80 --volume data-glpi:/var/www/files --volume data-glpi-config:/var/www/config --link yourdatabase:mysql aminiy/glpi
 ```
 
 ### Docker-compose Specific configuration examples
@@ -81,7 +81,7 @@ docker run --name glpi --publish 8000:80 --volume data-glpi:/var/www/files --vol
 ```
 services:
   glpi:
-    image: turgon37/glpi
+    image: aminiy/glpi
     environment:
       - GLPI_REMOVE_INSTALLER=yes
       - 'GLPI_INSTALL_PLUGINS=fusioninventory|https://github.com/fusioninventory/fusioninventory-for-glpi/releases/download/glpi9.2%2B1.0/glpi-fusioninventory-9.2.1.0.tar.bz2'
